@@ -16,7 +16,7 @@ class App(tk.Tk):
         self.recording = False
         self.file_exists = False    
         
-        cvs_figure = tk.Canvas(self, width=600, height=300, relief=tk.SUNKEN, border=1)  
+        self.cvs_figure = tk.Canvas(self, width=600, height=300, relief=tk.SUNKEN, border=1)  
         
         lblf_upper = tk.LabelFrame(self)
         btn_record = tk.Button(lblf_upper, text="Record", width=8, command=lambda m=1:self.threading_rec(m))
@@ -27,14 +27,14 @@ class App(tk.Tk):
         btn_play.grid(row=2, padx=5, pady=5)
         
         lblf_lower = tk.LabelFrame(self)
-        btn_view = tk.Button(lblf_lower, text="View", width=8)
+        btn_view = tk.Button(lblf_lower, text="Zoom", width=8)
         btn_next = tk.Button(lblf_lower, text="Next", width=8)
         btn_prev = tk.Button(lblf_lower, text="Prev", width=8)
         btn_view.grid(row=0, padx=5, pady=5)
         btn_next.grid(row=1, padx=5, pady=5)
         btn_prev.grid(row=2, padx=5, pady=5)
         
-        cvs_figure.grid(row=0, column=0, rowspan=2, padx=5, pady=5) 
+        self.cvs_figure.grid(row=0, column=0, rowspan=2, padx=5, pady=5) 
         # rowspan=2: cvs_figure sẽ được đặt bắt đầu ở hàng 0, cột 0 và chiếm luôn 2 hàng liền kề (hàng 0 và hàng 1).
         lblf_upper.grid(row=0, column=1, padx=5, pady=6, sticky=tk.N) # sticky N: dán lên phía bắc 
         lblf_lower.grid(row=1, column=1, padx=5, pady=6, sticky=tk.S)
@@ -47,13 +47,12 @@ class App(tk.Tk):
     def record_audio(self):
         #Set to True to record
         self.recording= True   
-        global file_exists 
         #Create a file to save the audio
         msb.showinfo(title="Recording Speech", message="Speak into the mic")
-        with sf.SoundFile("trial.wav", mode='w', samplerate=44100,
-                            channels=2) as file:#samplerate=44100 <-> 44.1kHz
+        with sf.SoundFile("trial.wav", mode='w', samplerate=16000,
+                            channels=1) as file:#samplerate=44100 <-> 44.1kHz
         #Create an input stream to record audio without a preset time
-                with sd.InputStream(samplerate=44100, channels=2, callback=self.callback):
+                with sd.InputStream(samplerate=16000, channels=1, callback=self.callback):
                     while self.recording == True:
                         #Set the variable to True to allow playing the audio later
                         self.file_exists =True
@@ -71,11 +70,22 @@ class App(tk.Tk):
             #To stop, set the flag to false
             self.recording = False
             msb.showinfo(title="Recording", message="Recording finished")
+            data, fs = sf.read('trial.wav', dtype='int16')
+            L = len(data) # số lượng mẫu
+            N = L // 600 # 600 là chiều dài canvas -> N: số mẫu trên 1 px trong canvas
+            for i in range(0, 600):
+                x = int(data[i*N])
+                print(x)
+                #y = (x + 32768)*300//65535 - 150
+                y = int((x + 32768)*300/65535) - 150
+                self.cvs_figure.create_line(i, 150, i, y+150)
+                
+            
         elif x == 3:
             #To play a recording, it must exist.
             if self.file_exists:
                 #Read the recording if it exists and play it
-                data, fs = sf.read("trial.wav", dtype='float32') 
+                data, fs = sf.read("trial.wav", dtype='int16') 
                 sd.play(data,fs)
                 sd.wait()
             else:
