@@ -18,7 +18,7 @@ class App(tk.Tk):
         self.recording = False
         self.file_exists = False
         self.data = None
-        self.index = tk.IntVar()
+        self.index = -1
         
         self.cvs_figure = tk.Canvas(self, width=600, height=300, relief=tk.SUNKEN, border=1)  
             
@@ -37,7 +37,7 @@ class App(tk.Tk):
         self.cbo_zoom.bind("<<ComboboxSelected>>", self.factor_zoom_changed)
         self.cbo_zoom["state"] = "readonly"
         btn_next = tk.Button(lblf_lower, text="Next", width=8, command=self.btn_next_click)  
-        btn_prev = tk.Button(lblf_lower, text="Prev", width=8)
+        btn_prev = tk.Button(lblf_lower, text="Prev", width=8, command=self.btn_prev_click)
 
         self.cbo_zoom.grid(row=0, padx=5, pady=5)
         btn_next.grid(row=1, padx=5, pady=5)
@@ -46,10 +46,10 @@ class App(tk.Tk):
         self.cvs_figure.grid(row=0, column=0, rowspan=2, padx=5, pady=5)# rowspan=2: cvs_figure sẽ được đặt bắt đầu ở hàng 0, cột 0 và chiếm luôn 2 hàng liền kề (hàng 0 và hàng 1).
         lblf_upper.grid(row=0, column=1, padx=5, pady=6, sticky=tk.N)# sticky N: dán lên phía bắc 
         lblf_lower.grid(row=1, column=1, padx=5, pady=6, sticky=tk.S)
-        self.index.set(0)
     
     def factor_zoom_changed(self, event):
         factor_zoom = self.factor_zoom.get()
+        self.index = -1
         print('factor_zoom ', factor_zoom)
     
     #Fit data into queue
@@ -63,7 +63,7 @@ class App(tk.Tk):
         #Create a file to save the audio
         msb.showinfo(title="Recording Speech", message="Speak into the mic")
         with sf.SoundFile("trial.wav", mode='w', samplerate=16000,
-                            channels=1) as file:#samplerate=44100 <-> 44.1kHz
+                            channels=1) as file:#samplerate=16000 <-> 16kHz
         #Create an input stream to record audio without a preset time
                 with sd.InputStream(samplerate=16000, channels=1, callback=self.callback):
                     while self.recording == True:
@@ -92,12 +92,14 @@ class App(tk.Tk):
                 lst_values.append(s)
             self.cbo_zoom["values"] = lst_values
             self.cvs_figure.delete(tk.ALL)
-            for i in range(0, 599):
-                x1 = int(self.data[i*N])            
-                y1 = int((x1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150         
-                x2 = int(self.data[(i+1)*N])# i+1 mẫu kế bên        
-                y2 = int((x2 + 32768)*300/65535) - 150            
-                self.cvs_figure.create_line(i, 150 - y1, i+1, 150 - y2, fill="green")         
+            
+            yc = 150 # Điểm gốc tung độ ở giữa canvas
+            for x in range(0, 599):
+                a1 = int(self.data[x*N])            
+                y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150         
+                a2 = int(self.data[(x+1)*N])# i+1 mẫu kế bên        
+                y2 = int((a2 + 32768)*300/65535) - 150            
+                self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")         
             
         elif x == 3:
             #To play a recording, it must exist.
@@ -114,27 +116,47 @@ class App(tk.Tk):
         L = len(self.data) # số lượng mẫu
         N = L // 600 # 600 là chiều dài canvas -> N: số mẫu trên 1 px trong canvas # next -> đi qua đoạn 600px tiếp theo
         self.cvs_figure.delete(tk.ALL)
-        i = self.index.get()
+        i = self.index
         for x in range(0, 599):
-            a1 = int(self.data[i*600 + x])     # a là biên độ       
+            a1 = int(self.data[i*600 + x])    # a là biên độ       
             y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150
-            a2 = int(self.data[i*600 + (x+1)])     # a là biên độ       
+            a2 = int(self.data[i*600 + (x+1)]) 
             y2 = int((a2 + 32768)*300/65535) - 150
             self.cvs_figure.create_line(x, 150-y1, x+1, 150-y2, fill="green")
             
     def btn_next_click(self):
-        L = len(self.data) # số lượng mẫu
-        N = L // 600 # 600 là chiều dài canvas -> N: số mẫu trên 1 px trong canvas # next -> đi qua đoạn 600px tiếp theo
+        factor_zoom = self.factor_zoom.get()
+        factor_zoom = int(factor_zoom.strip())
+        data_temp = self.data[::factor_zoom]
+        L = len(data_temp) # số lượng mẫu
+        N = L // 600 # N: số mẫu trên 1 px trong canvas -> max combobox zoom factor
         self.cvs_figure.delete(tk.ALL)
-        i = self.index.get()
-        i += 1
-        self.index.set(i)
-        print('i', i, 'self.index', self.index.get())
+        if self.index < N - 1:
+            self.index += 1
+        i = self.index
+        print('i', i, 'self.index', self.index)
         
         for x in range(0, 599):
-            a1 = int(self.data[i*600 + x])     # a là biên độ       
+            a1 = int(data_temp[i*600 + x])     # a là biên độ       
             y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150
-            a2 = int(self.data[i*600 + x+1])     # a là biên độ       
+            a2 = int(data_temp[i*600 + x+1])     # a là biên độ       
+            y2 = int((a2 + 32768)*300/65535) - 150
+            self.cvs_figure.create_line(x, 150-y1, x+1, 150-y2, fill="green")
+        
+    def btn_prev_click(self):
+        factor_zoom = self.factor_zoom.get()
+        factor_zoom = int(factor_zoom.strip())
+        data_temp = self.data[::factor_zoom]
+        self.cvs_figure.delete(tk.ALL)
+        if self.index > 0:
+            self.index -= 1
+        i = self.index
+        print('i', i, 'self.index', self.index)
+        
+        for x in range(0, 599):
+            a1 = int(data_temp[i*600 + x])     # a là biên độ       
+            y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150
+            a2 = int(data_temp[i*600 + x+1])     # a là biên độ       
             y2 = int((a2 + 32768)*300/65535) - 150
             self.cvs_figure.create_line(x, 150-y1, x+1, 150-y2, fill="green")
 
