@@ -23,12 +23,14 @@ class App(tk.Tk):
         self.cvs_figure = tk.Canvas(self, width=600, height=300, relief=tk.SUNKEN, border=1)  
             
         lblf_upper = tk.LabelFrame(self)
+        btn_open = tk.Button(lblf_upper, text = 'Open', width = 8)
         btn_record = tk.Button(lblf_upper, text="Record", width=8, command=lambda m=1:self.threading_rec(m))
         btn_stop = tk.Button(lblf_upper, text="Stop", width=8, command=lambda m=2:self.threading_rec(m))
         btn_play = tk.Button(lblf_upper, text="Play", width=8, command=lambda m=3:self.threading_rec(m))
-        btn_record.grid(row=0, padx=5, pady=5)
-        btn_stop.grid(row=1, padx=5, pady=5)
-        btn_play.grid(row=2, padx=5, pady=5)
+        btn_open.grid(row = 0, padx = 5, pady = 5)
+        btn_record.grid(row=1, padx=5, pady=5)
+        btn_stop.grid(row=2, padx=5, pady=5)
+        btn_play.grid(row=3, padx=5, pady=5)
         
         lblf_lower = tk.LabelFrame(self)
         self.factor_zoom = tk.StringVar()
