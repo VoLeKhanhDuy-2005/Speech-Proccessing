@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as msb
+import tkinter.filedialog as fd
 
 import sounddevice as sd
 import queue
@@ -23,14 +24,16 @@ class App(tk.Tk):
         self.cvs_figure = tk.Canvas(self, width=600, height=300, relief=tk.SUNKEN, border=1)  
             
         lblf_upper = tk.LabelFrame(self)
-        btn_open = tk.Button(lblf_upper, text = 'Open', width = 8)
+        btn_open = tk.Button(lblf_upper, text ="Open", width = 8, command=self.btn_open_click)
+        btn_cut = tk.Button(lblf_upper, text="Cut", width=8, command=self.btn_cut_click)
         btn_record = tk.Button(lblf_upper, text="Record", width=8, command=lambda m=1:self.threading_rec(m))
         btn_stop = tk.Button(lblf_upper, text="Stop", width=8, command=lambda m=2:self.threading_rec(m))
         btn_play = tk.Button(lblf_upper, text="Play", width=8, command=lambda m=3:self.threading_rec(m))
-        btn_open.grid(row = 0, padx = 5, pady = 5)
-        btn_record.grid(row=1, padx=5, pady=5)
-        btn_stop.grid(row=2, padx=5, pady=5)
-        btn_play.grid(row=3, padx=5, pady=5)
+        btn_open.grid(row=0, padx =5, pady=5)
+        btn_cut.grid(row=1, padx=5, pady=5)
+        btn_record.grid(row=2, padx=5, pady=5)
+        btn_stop.grid(row=3, padx=5, pady=5)
+        btn_play.grid(row=4, padx=5, pady=5)
         
         lblf_lower = tk.LabelFrame(self)
         self.factor_zoom = tk.StringVar()
@@ -161,8 +164,45 @@ class App(tk.Tk):
             a2 = int(data_temp[i*600 + x+1])     # a là biên độ       
             y2 = int((a2 + 32768)*300/65535) - 150
             self.cvs_figure.create_line(x, 150-y1, x+1, 150-y2, fill="green")
+            
+    def btn_open_click(self):
+        filetypes = (("Wave files", "*.wav"),)
+        filename = fd.askopenfilename(title="Open wave file", filetypes=filetypes)
+        if filename:
+            print(filename)      
+        self.data, fs = sf.read(filename, dtype='int16')
+        L = len(self.data) # số lượng mẫu
+        N = L // 600 # 600 là chiều dài canvas -> N: số mẫu trên 1 px trong canvas (600px đầu tiên)
+        lst_values = []
+        for i in range(1, N+1):
+            s = "%10d" % i
+            lst_values.append(s)
+        self.cbo_zoom["values"] = lst_values
+        self.cvs_figure.delete(tk.ALL)
+        
+        yc = 150 # Điểm gốc tung độ ở giữa canvas
+        for x in range(0, 599):
+            a1 = int(self.data[x*N])            
+            y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150         
+            a2 = int(self.data[(x+1)*N])# i+1 mẫu kế bên        
+            y2 = int((a2 + 32768)*300/65535) - 150            
+            self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")  
+            
+    def btn_cut_click(self):
+        index = 30
+        batDau = index * 600  # 600Hz
+        ketThuc = (index + 1) * 600
+        data_temp = self.data[batDau:ketThuc]
+        self.cvs_figure.delete(tk.ALL)
+        yc = 150 # Điểm gốc tung độ ở giữa canvas
+        for x in range(0, 599):
+            a1 = int(data_temp[x])            
+            y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150         
+            a2 = int(data_temp[(x+1)])# i+1 mẫu kế bên        
+            y2 = int((a2 + 32768)*300/65535) - 150            
+            self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")  
 
 if __name__	==	"__main__":
-    app	=	App()
+    app	= App()
     app.mainloop()
     
