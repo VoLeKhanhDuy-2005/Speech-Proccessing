@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-Fmax = 5000 # Tần số tối đa trên trục x khi vẽ. Ở đây chọn 5000 Hz
+Fmax = 5000 # Tần số tối đa trên trục x khi vẽ. Ở đây chọn 5000 Hz = 1/2 tần số lấy mẫu
 n = 500 # 500 điểm mẫu dữ liệu tần số  muốn vẽ
 f = np.linspace(0, Fmax, 500) # mảng tần số rời rạc từ 0 đến Fmax gồm 500 điểm
 Fs = 10000 # tần số lấy mẫu (10000 mẫu)

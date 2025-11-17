@@ -4,8 +4,7 @@ import numpy as np
 def MyFourier(x):
     M = len(x)
     XR = np.zeros((M,), np.float32) # R: Real part
-    XI = np.zeros((M,)
-                  , np.float32) # I: Imaginary part
+    XI = np.zeros((M,), np.float32) # I: Imaginary part
     for m in range(0, M):
         XR[m] = 0.0
         XI[m] = 0.0
