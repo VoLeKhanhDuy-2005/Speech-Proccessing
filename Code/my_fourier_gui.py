@@ -61,6 +61,7 @@ class App(tk.Tk):
             self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")  
             
     def btn_spectrum_click(self):
+        # voice
         index = 23
         # index = 30 #chọn đoạn cắt thứ 30 -> đoạn đột biến (biên độ thay đổi rõ rệt)
         batDau = index * 600  # 600Hz
@@ -68,14 +69,45 @@ class App(tk.Tk):
         x = self.data[batDau:ketThuc]
         N = 16000 # N = len(x)
         x = x / 32768  # Chuẩn hóa biên độ về [-1, 1] -> 32768 là giá trị biên độ lớn nhất của tín hiệu 16-bit
-        x = x.astype(np.float32)
+        x = x.astype(np.float32)    
+        
         X = np.fft.fft(x, N)  # Phép biến đổi Fourier nhanh (FFT)
         S = np.sqrt(X.real**2 + X.imag**2)  # Biên độ phổ
-        S = 20*np.log10(S + 1)  # Chuyển đổi sang thang dB: db = 20 * log10(K), K = amplitude, + 1 lấy số liệu dương; 20: độ khuyech đại - optional
+        S = 20*np.log10(S)#S = 20*np.log10(S + 1)  # Chuyển đổi sang thang dB: db = 20 * log10(K), K = amplitude, + 1 lấy số liệu dương; 20: độ khuyech đại - optional
         S = S[:N//2+1] # lấy phần đối xứng của S
         print('S =', S)
         plt.plot(S)
         plt.show()
+            
+    def btn_spectrum_pre_emphasis_click(self):
+        # no voice
+        index = 23
+        # index = 30 #chọn đoạn cắt thứ 30 -> đoạn đột biến (biên độ thay đổi rõ rệt)
+        batDau = index * 600  # 600Hz
+        ketThuc = (index + 1) * 600 # bat dau + 600
+        x = self.data[batDau:ketThuc]
+        N = 16000 # N = len(x)
+        x = x / 32768  # Chuẩn hóa biên độ về [-1, 1] -> 32768 là giá trị biên độ lớn nhất của tín hiệu 16-bit
+        x = x.astype(np.float32)
+        L = len(x)
+        y = np.zeros((L,), dtype=np.float32)
+        a = 0.98
+        for i in range(1, L):
+            if i == 0:
+                y[i] = x[i] - a*x[i]
+            else:
+                y[i] = x[i] - a*x[i-1]
+            
+        
+        Y = np.fft.fft(y, N)  # Phép biến đổi Fourier nhanh (FFT)
+        S = np.sqrt(Y.real**2 + Y.imag**2)  # Biên độ phổ
+        S = 20*np.log10(S)  # Chuyển đổi sang thang dB: db = 20 * log10(K), K = amplitude, + 1 lấy số liệu dương; 20: độ khuyech đại - optional
+        S = S[:N//2+1] # lấy phần đối xứng của S
+        print('S =', S)
+        plt.plot(S)
+        plt.show()
+        
+    
 
 if __name__	==	"__main__":
     app	= App()
