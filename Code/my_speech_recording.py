@@ -18,6 +18,7 @@ class App(tk.Tk):
         #Declare variables and initialise them
         self.recording = False
         self.file_exists = False
+        self.filename = None
         self.data = None
         self.index = -1
         
@@ -110,7 +111,11 @@ class App(tk.Tk):
             #To play a recording, it must exist.
             if self.file_exists:
                 #Read the recording if it exists and play it
-                data, fs = sf.read("trial.wav", dtype='int16') 
+                data, fs = sf.read("trial.wav", dtype='float32') 
+                sd.play(data,fs)
+                sd.wait()
+            elif self.filename is not None:
+                data, fs = sf.read(self.filename, dtype='float32') 
                 sd.play(data,fs)
                 sd.wait()
             else:
@@ -167,10 +172,10 @@ class App(tk.Tk):
             
     def btn_open_click(self):
         filetypes = (("Wave files", "*.wav"),)
-        filename = fd.askopenfilename(title="Open wave file", filetypes=filetypes)
-        if filename:
-            print(filename)      
-        self.data, fs = sf.read(filename, dtype='int16')
+        self.filename = fd.askopenfilename(title="Open wave file", filetypes=filetypes)
+        if self.filename:
+            print(self.filename)      
+        self.data, fs = sf.read(self.filename, dtype='int16')
         L = len(self.data) # số lượng mẫu
         N = L // 600 # 600 là chiều dài canvas -> N: số mẫu trên 1 px trong canvas (600px đầu tiên)
         lst_values = []
@@ -189,8 +194,26 @@ class App(tk.Tk):
             self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")  
             
     def btn_cut_click(self):
-        index = 30
-        batDau = index * 600  # 600Hz
+        data_mix_1 = self.data[20 * 600:32 * 600]
+        n = len(data_mix_1)
+        s = ''
+        for i in range(0, n):
+            s = s + "%6d\n" % data_mix_1[i]
+        f = open("mix_01.txt", "wt")
+        f.write(s)
+        f.close()
+        
+        data_mix_2 = self.data[42 * 600:54 * 600]
+        n = len(data_mix_2)
+        s = ''
+        for i in range(0, n):
+            s = s + "%6d\n" % data_mix_2[i]
+        f = open("mix_02.txt", "wt")
+        f.write(s)
+        f.close()
+        
+        index = 20
+        batDau = index * 600  # 600px
         ketThuc = (index + 1) * 600
         data_temp = self.data[batDau:ketThuc]
         self.cvs_figure.delete(tk.ALL)
