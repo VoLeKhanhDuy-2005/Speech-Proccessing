@@ -3,11 +3,9 @@ from sklearn.decomposition import PCA
 rng = np.random.default_rng(100)
 n = 72000
 x = rng.normal(size=(n, 2))
-pca = PCA(whiten=True)
-y = pca.fit_transform(x)
 
 # Kiểm tra ma trận covariance
-C = np.matmul(y.T, y)
+C = np.matmul(x.T, x)
 C /= n
 print("Cx =")
 print(C)

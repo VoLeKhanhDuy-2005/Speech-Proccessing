@@ -42,7 +42,7 @@ print("Cy =")
 print(C)
 
 
-# Báo cáo: tại sao gỡ ra dữ liệu trộn lẫn được
+# Báo cáo: tại sao gỡ ra dữ liệu âm thanh trộn lẫn được
 
 # C11 = 0.0
 # C12 = 0.0
