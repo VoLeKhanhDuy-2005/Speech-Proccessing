@@ -1,4 +1,4 @@
-f = open("trial.wav", "rb")
+f = open("Record/mix_violin_piano_01.wav", "rb")
 ID = f.read(4)
 print("%c%c%c%c" % (ID[0], ID[1], ID[2], ID[3]))
 

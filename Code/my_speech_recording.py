@@ -22,7 +22,10 @@ class App(tk.Tk):
         self.data = None
         self.index = -1
         
-        self.cvs_figure = tk.Canvas(self, width=600, height=300, relief=tk.SUNKEN, border=1)  
+        self.cvs_figure = tk.Canvas(self, width=600, height=300)  
+        # '<Button-1>' là sự kiện cho Nhấp chuột trái.
+        # Sự kiện '<Button-2>' là nhấp chuột giữa, '<Button-3>' là nhấp chuột phải.
+        self.cvs_figure.bind('<Button-1>', self.handle_mouse)
             
         lblf_upper = tk.LabelFrame(self)
         btn_open = tk.Button(lblf_upper, text ="Open", width = 8, command=self.btn_open_click)
@@ -224,6 +227,8 @@ class App(tk.Tk):
             a2 = int(data_temp[(x+1)])# i+1 mẫu kế bên        
             y2 = int((a2 + 32768)*300/65535) - 150            
             self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")  
+    def handle_mouse(self, event):
+        print("x = ", event.x)
 
 if __name__	==	"__main__":
     app	= App()

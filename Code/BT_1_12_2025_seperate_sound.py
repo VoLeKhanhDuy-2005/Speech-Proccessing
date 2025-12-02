@@ -3,21 +3,21 @@ import speechbrain as sb
 from speechbrain.dataio.dataio import read_audio
 from IPython.display import Audio
 
-mixture_0 = read_audio('Code/mixture_0.wav').squeeze()
-source1_0 = read_audio('Code/source1_0.wav').squeeze()
-source2_0 = read_audio('Code/source2_0.wav').squeeze()
+mixture_0 = read_audio('Record/mixture_0.wav').squeeze()
+source1_0 = read_audio('Record/source1_0.wav').squeeze()
+source2_0 = read_audio('Record/source2_0.wav').squeeze()
 
-mixture_1 = read_audio('Code/mixture_1.wav').squeeze()
-source1_1 = read_audio('Code/source1_1.wav').squeeze()
-source2_1 = read_audio('Code/source2_1.wav').squeeze()
+mixture_1 = read_audio('Record/mixture_1.wav').squeeze()
+source1_1 = read_audio('Record/source1_1.wav').squeeze()
+source2_1 = read_audio('Record/source2_1.wav').squeeze()
 
-mixture_2 = read_audio('Code/mixture_2.wav').squeeze()
-source1_2 = read_audio('Code/source1_2.wav').squeeze()
-source2_2 = read_audio('Code/source2_2.wav').squeeze()
+mixture_2 = read_audio('Record/mixture_2.wav').squeeze()
+source1_2 = read_audio('Record/source1_2.wav').squeeze()
+source2_2 = read_audio('Record/source2_2.wav').squeeze()
 
-mixture_3 = read_audio('Code/mixture_3.wav').squeeze()
-source1_3 = read_audio('Code/source1_3.wav').squeeze()
-source2_3 = read_audio('Code/source2_3.wav').squeeze()
+mixture_3 = read_audio('Record/mixture_3.wav').squeeze()
+source1_3 = read_audio('Record/source1_3.wav').squeeze()
+source2_3 = read_audio('Record/source2_3.wav').squeeze()
 
 train_mixs = [mixture_0, mixture_1, mixture_2]
 train_source1s = [source1_0, source1_1, source1_2]
@@ -152,7 +152,7 @@ valid_loader_audio = DataLoader(valid_dataset_audio, batch_size=1)
 # Audio(estimated_sources_train[0].squeeze().detach(), rate=16000)
 # Audio(estimated_sources_train[1].squeeze().detach(), rate=16000)
 
-
+# * Cite
 # @misc{speechbrainV1,
 #   title={Open-Source Conversational AI with {SpeechBrain} 1.0},
 #   author={Mirco Ravanelli and Titouan Parcollet and Adel Moumen and Sylvain de Langen and Cem Subakan and Peter Plantinga and Yingzhi Wang and Pooneh Mousavi and Luca Della Libera and Artem Ploujnikov and Francesco Paissan and Davide Borra and Salah Zaiem and Zeyu Zhao and Shucong Zhang and Georgios Karakasidis and Sung-Lin Yeh and Pierre Champion and Aku Rouhe and Rudolf Braun and Florian Mai and Juan Zuluaga-Gomez and Seyed Mahed Mousavi and Andreas Nautsch and Xuechen Liu and Sangeet Sagar and Jarod Duret and Salima Mdhaffar and Gaelle Laperriere and Mickael Rouvier and Renato De Mori and Yannick Esteve},

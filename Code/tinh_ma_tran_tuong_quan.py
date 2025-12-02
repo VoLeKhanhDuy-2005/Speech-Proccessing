@@ -38,7 +38,7 @@ y = pca.fit_transform(x)
 # Kiểm tra ma trận covariance
 C = np.matmul(y.T, y)
 C /= n
-print("Cy =")
+print("C sau khi làm trắng")
 print(C)
 
 
