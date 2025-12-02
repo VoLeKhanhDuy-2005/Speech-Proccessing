@@ -197,27 +197,34 @@ class App(tk.Tk):
             self.cvs_figure.create_line(x, yc - y1, x+1, yc - y2, fill="green")  
             
     def btn_cut_click(self):
-        data_mix_1 = self.data[20 * 600:32 * 600]
-        n = len(data_mix_1)
-        s = ''
-        for i in range(0, n):
-            s = s + "%6d\n" % data_mix_1[i]
-        f = open("mix_01.txt", "wt")
-        f.write(s)
-        f.close()
+        # data_mix_1 = self.data[20 * 600:32 * 600]
+        # n = len(data_mix_1)
+        # s = ''
+        # for i in range(0, n):
+        #     s = s + "%6d\n" % data_mix_1[i]
+        # f = open("mix_01.txt", "wt")
+        # f.write(s)
+        # f.close()
         
-        data_mix_2 = self.data[42 * 600:54 * 600]
-        n = len(data_mix_2)
-        s = ''
-        for i in range(0, n):
-            s = s + "%6d\n" % data_mix_2[i]
-        f = open("mix_02.txt", "wt")
-        f.write(s)
-        f.close()
+        # data_mix_2 = self.data[42 * 600:54 * 600]
+        # n = len(data_mix_2)
+        # s = ''
+        # for i in range(0, n):
+        #     s = s + "%6d\n" % data_mix_2[i]
+        # f = open("mix_02.txt", "wt")
+        # f.write(s)
+        # f.close()
         
-        index = 20
-        batDau = index * 600  # 600px
-        ketThuc = (index + 1) * 600
+        # index = 20
+        # batDau = index * 600  # 600px
+        # ketThuc = (index + 1) * 600
+        
+        # nam 1
+        # batDau = 14 * 600 + 68  # 600px
+        # ketThuc = 16 * 600 + 551
+        # nam 2
+        batDau = 38 * 600 + 230  # 600px
+        ketThuc = 41 * 600 + 497
         data_temp = self.data[batDau:ketThuc]
         self.cvs_figure.delete(tk.ALL)
         yc = 150 # Điểm gốc tung độ ở giữa canvas
@@ -234,3 +241,5 @@ if __name__	==	"__main__":
     app	= App()
     app.mainloop()
     
+    
+# Chuẩn hóa 2 đoạn thành độ dài bằng -> chuẩn hóa nội suy (up sample bằng lcm - bội chung nhỏ nhất -> down sample : một số nào đó)
