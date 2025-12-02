@@ -243,3 +243,4 @@ if __name__	==	"__main__":
     
     
 # Chuẩn hóa 2 đoạn thành độ dài bằng -> chuẩn hóa nội suy (up sample bằng lcm - bội chung nhỏ nhất -> down sample : một số nào đó)
+# vd: 2 đoạn 5, 6 -> up sample lcm = 30 -> down sample 30/... = ...
