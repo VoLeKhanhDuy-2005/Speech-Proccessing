@@ -79,25 +79,18 @@ b[11][0] = R[12]
 # C2 p = 12  # bậc LPC
 # b = R[1:p+1].reshape(p, 1)
 
-# A_1 = np.linalg.inv(A) # nghịch đảo ma trận A
-# a = np.matmul(A_1, b)
-# print("my a: ", a)
+A_1 = np.linalg.inv(A) # nghịch đảo ma trận A
+a = np.matmul(A_1, b)
+print("my a: ", a)
 
 # Kiểm tra lại với lpc của librosa
-# a_lib = librosa.lpc(y, order=12)
-# print("lib a: ", a_lib)
+a_lib = librosa.lpc(z, order=12)
+print("lib a: ", a_lib)
 
 # a1 = (R[1]*R[0] - R[1]*R[2])/(R[0]**2 - R[1]**2)
 # print(a1)
 
-import audiolazy as lpc
-order = 12
-coeffs = lpc.autocor(z, order) # python 3.9
-print(coeffs.numerator)
 
 pass
 
 # https://librosa.org/doc/main/generated/librosa.lpc.html
-
-# BT: đánh nhãn chữ 1 -> từ đầu đến cuối
-## vd 0011 .. 1100 (tu 1 thu nhat) ... tu 1 thu 2
