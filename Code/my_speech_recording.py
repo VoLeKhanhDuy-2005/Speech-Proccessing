@@ -147,12 +147,12 @@ class App(tk.Tk):
         if self.index < N - 1:
             self.index += 1
         i = self.index
-        print('i', i, 'self.index', self.index)
+        print('self.index', self.index)
         
         for x in range(0, 599):
-            a1 = int(data_temp[i*600 + x])     # a là biên độ       
+            a1 = int(data_temp[i*600 + x])# a là biên độ       
             y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150
-            a2 = int(data_temp[i*600 + x+1])     # a là biên độ       
+            a2 = int(data_temp[i*600 + x+1])     
             y2 = int((a2 + 32768)*300/65535) - 150
             self.cvs_figure.create_line(x, 150-y1, x+1, 150-y2, fill="green")
         
@@ -167,9 +167,9 @@ class App(tk.Tk):
         print('i', i, 'self.index', self.index)
         
         for x in range(0, 599):
-            a1 = int(data_temp[i*600 + x])     # a là biên độ       
-            y1 = int((a1 + 32768)*300/65535) - 150 #y = (x + 32768)*300//65535 - 150
-            a2 = int(data_temp[i*600 + x+1])     # a là biên độ       
+            a1 = int(data_temp[i*600 + x])# a là biên độ       
+            y1 = int((a1 + 32768)*300/65535) - 150 # y = (x + 32768)*300//65535 - 150
+            a2 = int(data_temp[i*600 + x+1])       
             y2 = int((a2 + 32768)*300/65535) - 150
             self.cvs_figure.create_line(x, 150-y1, x+1, 150-y2, fill="green")
             
@@ -223,8 +223,12 @@ class App(tk.Tk):
         # batDau = 14 * 600 + 68  # 600px
         # ketThuc = 16 * 600 + 551
         # nam 2
-        batDau = 38 * 600 + 230  # 600px
-        ketThuc = 41 * 600 + 497
+        # batDau = 38 * 600 + 230  # 600px
+        # ketThuc = 41 * 600 + 497
+        
+        batDau = 17 * 600 + 230  # 600px
+        ketThuc = 21 * 600 + 497
+        
         data_temp = self.data[batDau:ketThuc]
         self.cvs_figure.delete(tk.ALL)
         yc = 150 # Điểm gốc tung độ ở giữa canvas
